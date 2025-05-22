@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Jobs | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff5722;
+      --success-color: #4caf50;
+      --info-color: #2196f3;
+      --warning-color: #ffc107;
+      --danger-color: #f44336;
+      --dark-color: #2c3e50;
+      --light-color: #f8f9fa;
+      --sidebar-width: 250px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      overflow-x: hidden;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: white !important;
+    }
+    
+    .sidebar {
+      width: var(--sidebar-width);
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      padding-top: 80px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar-menu a {
+      display: block;
+      padding: 12px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar-menu a:hover {
+      background-color: rgba(63, 81, 181, 0.1);
+      border-left: 3px solid var(--primary-color);
+    }
+    
+    .sidebar-menu a.active {
+      background-color: rgba(63, 81, 181, 0.1);
+      border-left: 3px solid var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .sidebar-menu i {
+      width: 25px;
+      margin-right: 10px;
+      text-align: center;
+    }
+    
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 30px;
+      padding-top: 90px;
+      transition: all 0.3s ease;
+    }
+    
+    .dashboard-section {
+      padding: 30px 0;
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    .action-buttons .btn {
+      margin-right: 5px;
+      min-width: 80px;
+      transition: all 0.3s ease;
+    }
+    
+    .action-buttons .btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .modal-job-details .modal-body {
+      padding: 25px;
+    }
+    
+    .job-detail-row {
+      margin-bottom: 15px;
+    }
+    
+    .job-detail-label {
+      font-weight: 600;
+      color: var(--dark-color);
+    }
+    
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .loading-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2000;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background-color: #303f9f;
+      border-color: #303f9f;
+      transform: translateY(-2px);
+    }
+    
+    .breadcrumb {
+      background: transparent;
+      padding: 0;
+    }
+    
+    .breadcrumb-item.active {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .invalid-feedback, .valid-feedback {
+      font-size: 0.85rem;
+    }
+    
+    .input-group .valid-feedback {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+    }
+    
+    .input-group .form-control.is-valid {
+      border-color: var(--success-color);
+      background-image: none;
+      padding-right: 0.75rem;
+    }
+    
+    .input-group .form-control.is-invalid {
+      border-color: var(--danger-color);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar-toggle {
+        display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1100;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .action-buttons .btn {
+        margin-bottom: 5px;
+        width: 100%;
+      }
+      
+      .dashboard-card {
+        padding: 15px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .main-content {
+        padding: 20px;
+        padding-top: 80px;
+      }
+      
+      .job-detail-label {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-handshake me-2"></i>DSATM Placements
+      </a>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="sidebar-menu">
+      <li>
+        <a href="manage-students.html" data-bs-toggle="tooltip" title="Manage student profiles">
+          <i class="fas fa-user-graduate"></i> Manage Students
+        </a>
+      </li>
+      <li>
+        <a href="manage-recruiters.html" data-bs-toggle="tooltip" title="Manage recruiter accounts">
+          <i class="fas fa-building"></i> Manage Recruiters
+        </a>
+      </li>
+      <li>
+        <a href="manage-jobs.html" class="active" data-bs-toggle="tooltip" title="Manage job postings">
+          <i class="fas fa-briefcase"></i> Manage Jobs
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-briefcase me-2"></i>Manage Jobs</h2>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item active" aria-current="page">Manage Jobs</li>
+          </ol>
+        </nav>
+      </div>
+      
+      <div class="dashboard-card position-relative">
+        <div class="d-flex justify-content-end mb-3">
+          <button class="btn btn-primary me-2" onclick="exportJobs()" data-bs-toggle="tooltip" title="Export job data as CSV">
+            <i class="fas fa-file-export me-2"></i>Export CSV
+          </button>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addJobModal" data-bs-toggle="tooltip" title="Add a new job posting">
+            <i class="fas fa-plus me-2"></i>Add New Job
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table id="jobsTable" class="table table-hover" style="width:100%">
+            <thead>
+              <tr>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Posted Date</th>
+                <th>Deadline</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-job-id="SE123">
+                <td>Software Engineer</td>
+                <td>Infosys</td>
+                <td>2023-10-15</td>
+                <td>2023-11-15</td>
+                <td class="action-buttons">
+                  <button class="btn btn-sm btn-info view-job-btn" data-job-id="SE123" data-bs-toggle="modal" data-bs-target="#viewJobModal" data-bs-toggle="tooltip" title="View job details">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                </td>
+              </tr>
+              <tr data-job-id="DA123">
+                <td>Data Analyst</td>
+                <td>TCS</td>
+                <td>2023-10-18</td>
+                <td>2023-11-20</td>
+                <td class="action-buttons">
+                  <button class="btn btn-sm btn-info view-job-btn" data-job-id="DA123" data-bs-toggle="modal" data-bs-target="#viewJobModal" data-bs-toggle="tooltip" title="View job details">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                </td>
+              </tr>
+              <tr data-job-id="CA123">
+                <td>Cloud Architect</td>
+                <td>Wipro</td>
+                <td>2023-10-20</td>
+                <td>2023-11-30</td>
+                <td class="action-buttons">
+                  <button class="btn btn-sm btn-info view-job-btn" data-job-id="CA123" data-bs-toggle="modal" data-bs-target="#viewJobModal" data-bs-toggle="tooltip" title="View job details">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                </td>
+              </tr>
+              <tr data-job-id="DE123">
+                <td>DevOps Engineer</td>
+                <td>Accenture</td>
+                <td>2023-10-22</td>
+                <td>2023-12-05</td>
+                <td class="action-buttons">
+                  <button class="btn btn-sm btn-info view-job-btn" data-job-id="DE123" data-bs-toggle="modal" data-bs-target="#viewJobModal" data-bs-toggle="tooltip" title="View job details">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                </td>
+              </tr>
+              <tr data-job-id="UX123">
+                <td>UX Designer</td>
+                <td>Infosys</td>
+                <td>2023-10-25</td>
+                <td>2023-12-10</td>
+                <td class="action-buttons">
+                  <button class="btn btn-sm btn-info view-job-btn" data-job-id="UX123" data-bs-toggle="modal" data-bs-target="#viewJobModal" data-bs-toggle="tooltip" title="View job details">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Job Modal -->
+  <div class="modal fade" id="viewJobModal" tabindex="-1" aria-labelledby="viewJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewJobModalLabel">Job Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modal-job-details">
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Job Title:</div>
+            <div class="col-md-9" id="viewJobTitle"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Company:</div>
+            <div class="col-md-9" id="viewJobCompany"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Job Type:</div>
+            <div class="col-md-9" id="viewJobType"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Location:</div>
+            <div class="col-md-9" id="viewJobLocation"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Salary:</div>
+            <div class="col-md-9" id="viewJobSalary"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Posted Date:</div>
+            <div class="col-md-9" id="viewJobPostedDate"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Deadline:</div>
+            <div class="col-md-9" id="viewJobDeadline"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Eligibility:</div>
+            <div class="col-md-9" id="viewJobEligibility"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Skills Required:</div>
+            <div class="col-md-9" id="viewJobSkills"></div>
+          </div>
+          <div class="row job-detail-row">
+            <div class="col-md-3 job-detail-label">Job Description:</div>
+            <div class="col-md-9" id="viewJobDescription"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Job Modal -->
+  <div class="modal fade" id="addJobModal" tabindex="-1" aria-labelledby="addJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addJobModalLabel">Add New Job</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addJobForm" novalidate>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="jobTitle" class="form-label">Job Title</label>
+                <input type="text" class="form-control" id="jobTitle" required data-bs-toggle="tooltip" title="Enter the job title (e.g., Software Engineer)">
+                <div class="invalid-feedback">Please enter a job title.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="jobCompany" class="form-label">Company</label>
+                <select class="form-select" id="jobCompany" required data-bs-toggle="tooltip" title="Select the company posting the job">
+                  <option value="">Select Company</option>
+                  <option value="Infosys">Infosys</option>
+                  <option value="TCS">TCS</option>
+                  <option value="Wipro">Wipro</option>
+                  <option value="Accenture">Accenture</option>
+                </select>
+                <div class="invalid-feedback">Please select a company.</div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="jobType" class="form-label">Job Type</label>
+                <select class="form-select" id="jobType" required data-bs-toggle="tooltip" title="Select the type of job">
+                  <option value="">Select Type</option>
+                  <option value="Full-time">Full-time</option>
+                  <option value="Internship">Internship</option>
+                  <option value="Contract">Contract</option>
+                </select>
+                <div class="invalid-feedback">Please select a job type.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="jobLocation" class="form-label">Location</label>
+                <input type="text" class="form-control" id="jobLocation" required data-bs-toggle="tooltip" title="Enter the job location (e.g., Bangalore)">
+                <div class="invalid-feedback">Please enter a location.</div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="jobSalary" class="form-label">Salary Range</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="jobSalary" placeholder="e.g., ₹6,00,000 - ₹8,00,000 or 6-8 LPA" required data-bs-toggle="tooltip" title="Enter salary (e.g., ₹6,00,000 - ₹8,00,000, 6-8 LPA, or 600000-800000)">
+                  <span class="input-group-text"><i class="fas fa-check-circle text-success d-none" id="salaryValidIcon"></i><i class="fas fa-exclamation-circle text-danger d-none" id="salaryInvalidIcon"></i></span>
+                </div>
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">Please enter a valid salary (e.g., ₹6,00,000 - ₹8,00,000, 6-8 LPA, or 600000-800000).</div>
+              </div>
+              <div class="col-md-6">
+                <label for="jobDeadline" class="form-label">Application Deadline</label>
+                <input type="date" class="form-control" id="jobDeadline" required data-bs-toggle="tooltip" title="Select the application deadline">
+                <div class="invalid-feedback">Please select a future date.</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="jobEligibility" class="form-label">Eligibility Criteria</label>
+              <textarea class="form-control" id="jobEligibility" rows="2" required data-bs-toggle="tooltip" title="Enter eligibility criteria (e.g., B.Tech with 60% aggregate)"></textarea>
+              <div class="invalid-feedback">Please enter eligibility criteria.</div>
+            </div>
+            <div class="mb-3">
+              <label for="jobSkills" class="form-label">Required Skills</label>
+              <textarea class="form-control" id="jobSkills" rows="2" required data-bs-toggle="tooltip" title="Enter required skills (e.g., Java, Python, SQL)"></textarea>
+              <div class="invalid-feedback">Please enter required skills.</div>
+            </div>
+            <div class="mb-3">
+              <label for="jobDescription" class="form-label">Job Description</label>
+              <textarea class="form-control" id="jobDescription" rows="4" required data-bs-toggle="tooltip" title="Enter the job description"></textarea>
+              <div class="invalid-feedback">Please enter a job description.</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="addNewJob()">Add Job</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container">
+    <div class="toast" id="successToast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="fas fa-check-circle text-success me-2"></i>
+        <strong class="me-auto">Success</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body"></div>
+    </div>
+    <div class="toast" id="errorToast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="fas fa-exclamation-circle text-danger me-2"></i>
+        <strong class="me-auto">Error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize tooltips
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+      // Sidebar toggle for mobile
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+      
+      mainContent.addEventListener('click', () => {
+        if (window.innerWidth < 992) {
+          sidebar.classList.remove('active');
+        }
+      });
+
+      // Mock job data for View modal
+      const jobData = {
+        SE123: {
+          title: 'Software Engineer',
+          company: 'Infosys',
+          type: 'Full-time',
+          location: 'Bangalore',
+          salary: '₹6,00,000 - ₹8,00,000 per annum',
+          postedDate: '2023-10-15',
+          deadline: '2023-11-15',
+          eligibility: 'B.Tech in CSE/ISE with 60% aggregate',
+          skills: 'Java, Python, SQL, Data Structures',
+          description: '<p>We are looking for a skilled Software Engineer to join our team. The ideal candidate will have strong programming skills and experience with software development life cycle.</p><ul><li>Develop and maintain software applications</li><li>Collaborate with cross-functional teams</li><li>Write clean, scalable code</li><li>Troubleshoot and debug applications</li></ul>'
+        },
+        DA123: {
+          title: 'Data Analyst',
+          company: 'TCS',
+          type: 'Full-time',
+          location: 'Hyderabad',
+          salary: '₹5,00,000 - ₹7,00,000 per annum',
+          postedDate: '2023-10-18',
+          deadline: '2023-11-20',
+          eligibility: 'B.Sc/B.Tech with 65% aggregate',
+          skills: 'Python, R, SQL, Excel',
+          description: '<p>Join our data analytics team to provide insights through data analysis and visualization.</p><ul><li>Analyze large datasets</li><li>Create reports and dashboards</li><li>Collaborate with stakeholders</li></ul>'
+        },
+        CA123: {
+          title: 'Cloud Architect',
+          company: 'Wipro',
+          type: 'Contract',
+          location: 'Chennai',
+          salary: '₹10,00,000 - ₹12,00,000 per annum',
+          postedDate: '2023-10-20',
+          deadline: '2023-11-30',
+          eligibility: 'B.Tech/M.Tech with cloud certifications',
+          skills: 'AWS, Azure, Docker, Kubernetes',
+          description: '<p>Design and implement cloud solutions for enterprise clients.</p><ul><li>Architect scalable cloud systems</li><li>Ensure security and compliance</li><li>Optimize cloud costs</li></ul>'
+        },
+        DE123: {
+          title: 'DevOps Engineer',
+          company: 'Accenture',
+          type: 'Full-time',
+          location: 'Pune',
+          salary: '₹8,00,000 - ₹10,00,000 per annum',
+          postedDate: '2023-10-22',
+          deadline: '2023-12-05',
+          eligibility: 'B.Tech with DevOps experience',
+          skills: 'CI/CD, Jenkins, Ansible, Terraform',
+          description: '<p>Support our DevOps pipelines and infrastructure automation.</p><ul><li>Manage CI/CD pipelines</li><li>Automate infrastructure</li><li>Monitor system performance</li></ul>'
+        },
+        UX123: {
+          title: 'UX Designer',
+          company: 'Infosys',
+          type: 'Internship',
+          location: 'Bangalore',
+          salary: '₹20,000 - ₹30,000 per month',
+          postedDate: '2023-10-25',
+          deadline: '2023-12-10',
+          eligibility: 'B.Design or equivalent',
+          skills: 'Figma, Adobe XD, User Research',
+          description: '<p>Create user-friendly interfaces for our products.</p><ul><li>Conduct user research</li><li>Design wireframes and prototypes</li><li>Collaborate with developers</li></ul>'
+        }
+      };
+
+      // Initialize DataTable
+      const table = $('#jobsTable').DataTable({
+        responsive: true,
+        paging: false,
+        searching: false,
+        info: false,
+        ordering: false,
+        drawCallback: () => {
+          // Re-initialize tooltips after table draw
+          $('[data-bs-toggle="tooltip"]').tooltip();
+        }
+      });
+
+      // Show loading state
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      loadingOverlay.classList.add('active');
+      setTimeout(() => {
+        loadingOverlay.classList.remove('active');
+      }, 1500);
+
+      // Initialize toasts
+      const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+      const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+
+      // Export jobs to CSV
+      window.exportJobs = function() {
+        showToast('success', 'Jobs data exported as CSV! (Mock download initiated)');
+      };
+
+      // Salary validation and normalization
+      const jobSalaryInput = document.getElementById('jobSalary');
+      const salaryValidIcon = document.getElementById('salaryValidIcon');
+      const salaryInvalidIcon = document.getElementById('salaryInvalidIcon');
+
+      function validateSalary(salary) {
+        // Relaxed regex to accept various formats
+        const salaryRegex = /^(₹?\s*(\d{1,3}(,\d{3})*|\d+|\d+\.\d{1,2})(L|LPA)?)(\s*-\s*(₹?\s*(\d{1,3}(,\d{3})*|\d+|\d+\.\d{1,2})(L|LPA)?))?(\s*(per\s*(annum|month|year))?)?$/i;
+        return salaryRegex.test(salary.trim());
+      }
+
+      function normalizeSalary(salary) {
+        salary = salary.trim().replace(/\s+/g, ' ').toLowerCase();
+        let suffix = 'per annum';
+        
+        // Handle per month
+        if (salary.includes('per month')) {
+          suffix = 'per month';
+          salary = salary.replace('per month', '').trim();
+        } else if (salary.includes('per year') || salary.includes('per annum')) {
+          salary = salary.replace(/(per year|per annum)/, '').trim();
+        }
+
+        // Handle LPA or L
+        if (salary.includes('lpa') || salary.includes('l')) {
+          let [min, max] = salary.replace(/(lpa|l)/, '').split('-').map(s => s.trim());
+          min = parseFloat(min) * 100000;
+          max = max ? parseFloat(max) * 100000 : min;
+          return `₹${min.toLocaleString('en-IN')} - ₹${max.toLocaleString('en-IN')} per annum`;
+        }
+
+        // Handle plain numbers or comma-separated numbers
+        let [min, max] = salary.replace(/₹/g, '').split('-').map(s => s.trim().replace(/,/g, ''));
+        min = parseInt(min) || 0;
+        max = max ? parseInt(max) : min;
+        
+        // Format as ₹X,XX,XXX
+        return `₹${min.toLocaleString('en-IN')} - ₹${max.toLocaleString('en-IN')} ${suffix}`;
+      }
+
+      // Real-time salary validation
+      jobSalaryInput.addEventListener('input', () => {
+        const isValid = validateSalary(jobSalaryInput.value);
+        jobSalaryInput.classList.remove('is-valid', 'is-invalid');
+        salaryValidIcon.classList.add('d-none');
+        salaryInvalidIcon.classList.add('d-none');
+        
+        if (jobSalaryInput.value.trim()) {
+          if (isValid) {
+            jobSalaryInput.classList.add('is-valid');
+            salaryValidIcon.classList.remove('d-none');
+          } else {
+            jobSalaryInput.classList.add('is-invalid');
+            salaryInvalidIcon.classList.remove('d-none');
+          }
+        }
+      });
+
+      // Add new job
+      window.addNewJob = function() {
+        const form = document.getElementById('addJobForm');
+        const jobTitle = document.getElementById('jobTitle');
+        const jobCompany = document.getElementById('jobCompany');
+        const jobType = document.getElementById('jobType');
+        const jobLocation = document.getElementById('jobLocation');
+        const jobSalary = document.getElementById('jobSalary');
+        const jobDeadline = document.getElementById('jobDeadline');
+        const jobEligibility = document.getElementById('jobEligibility');
+        const jobSkills = document.getElementById('jobSkills');
+        const jobDescription = document.getElementById('jobDescription');
+
+        // Custom validation
+        let isValid = form.checkValidity();
+        const today = new Date().toISOString().split('T')[0];
+
+        if (jobDeadline.value <= today) {
+          jobDeadline.setCustomValidity('Deadline must be a future date.');
+          isValid = false;
+        } else {
+          jobDeadline.setCustomValidity('');
+        }
+
+        if (!validateSalary(jobSalary.value)) {
+          jobSalary.setCustomValidity('Please enter a valid salary (e.g., ₹6,00,000 - ₹8,00,000, 6-8 LPA, or 600000-800000).');
+          isValid = false;
+        } else {
+          jobSalary.setCustomValidity('');
+        }
+
+        if (isValid) {
+          const jobId = `JOB${Math.floor(Math.random() * 10000)}`;
+          const postedDate = new Date().toISOString().split('T')[0];
+          const normalizedSalary = normalizeSalary(jobSalary.value);
+          const descriptionHtml = `<p>${jobDescription.value.split('\n').join('</p><p>')}</p>`;
+
+          // Add job to mock data
+          jobData[jobId] = {
+            title: jobTitle.value,
+            company: jobCompany.value,
+            type: jobType.value,
+            location: jobLocation.value,
+            salary: normalizedSalary,
+            postedDate: postedDate,
+            deadline: jobDeadline.value,
+            eligibility: jobEligibility.value,
+            skills: jobSkills.value,
+            description: descriptionHtml
+          };
+
+          // Add row to DataTable
+          table.row.add([
+            jobTitle.value,
+            jobCompany.value,
+            postedDate,
+            jobDeadline.value,
+            `<div class="action-buttons">
+              <button class="btn btn-sm btn-info view-job-btn" data-job-id="${jobId}" data-bs-toggle="modal" data-bs-target="#viewJobModal" data-bs-toggle="tooltip" title="View job details">
+                <i class="fas fa-eye"></i> View
+              </button>
+            </div>`
+          ]).node().setAttribute('data-job-id', jobId);
+          table.draw();
+
+          showToast('success', 'New job added successfully!');
+          $('#addJobModal').modal('hide');
+          form.reset();
+          form.classList.remove('was-validated');
+          jobSalaryInput.classList.remove('is-valid', 'is-invalid');
+          salaryValidIcon.classList.add('d-none');
+          salaryInvalidIcon.classList.add('d-none');
+        } else {
+          form.classList.add('was-validated');
+          showToast('error', 'Please fill out all required fields correctly.');
+        }
+      };
+
+      // View job details
+      $(document).on('click', '.view-job-btn', function() {
+        const jobId = $(this).data('job-id');
+        const job = jobData[jobId];
+        if (job) {
+          document.getElementById('viewJobTitle').textContent = job.title;
+          document.getElementById('viewJobCompany').textContent = job.company;
+          document.getElementById('viewJobType').textContent = job.type;
+          document.getElementById('viewJobLocation').textContent = job.location;
+          document.getElementById('viewJobSalary').textContent = job.salary;
+          document.getElementById('viewJobPostedDate').textContent = job.postedDate;
+          document.getElementById('viewJobDeadline').textContent = job.deadline;
+          document.getElementById('viewJobEligibility').textContent = job.eligibility;
+          document.getElementById('viewJobSkills').textContent = job.skills;
+          document.getElementById('viewJobDescription').innerHTML = job.description;
+        }
+      });
+
+      // Show toast notification
+      function showToast(type, message) {
+        const toast = type === 'success' ? successToast : errorToast;
+        document.querySelector(`#${type}Toast .toast-body`).textContent = message;
+        toast.show();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recruiter Dashboard | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff5722;
+      --dark-color: #2c3e50;
+      --light-color: #f8f9fa;
+      --success-color: #4caf50;
+      --info-color: #2196f3;
+      --warning-color: #ffc107;
+      --danger-color: #f44336;
+      --sidebar-width: 250px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+      transition: all 0.3s ease;
+      overflow-x: hidden;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: white !important;
+    }
+    
+    .sidebar {
+      width: var(--sidebar-width);
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      padding-top: 80px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar-menu li {
+      position: relative;
+    }
+    
+    .sidebar-menu a {
+      display: block;
+      padding: 12px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar-menu a:hover {
+      background-color: rgba(63, 81, 181, 0.1);
+      border-left: 3px solid var(--primary-color);
+    }
+    
+    .sidebar-menu a.active {
+      background-color: rgba(63, 81, 181, 0.1);
+      border-left: 3px solid var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .sidebar-menu i {
+      width: 25px;
+      margin-right: 10px;
+      text-align: center;
+    }
+    
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 30px;
+      padding-top: 90px;
+      transition: all 0.3s ease;
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .student-card {
+      border-left: 4px solid var(--primary-color);
+      transition: transform 0.2s;
+    }
+    
+    .student-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .skill-badge {
+      background-color: #e9ecef;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      display: inline-block;
+      font-size: 0.85rem;
+    }
+    
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-approved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .status-rejected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .resume-modal .modal-content {
+      border-radius: 10px;
+    }
+    
+    .resume-modal .modal-header {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+    
+    .pagination .page-item.active .page-link {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    .pagination .page-link {
+      color: var(--primary-color);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #dee2e6;
+    }
+    
+    .btn-outline-success:disabled, .btn-outline-danger:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-outline-primary, .btn-outline-success, .btn-outline-danger {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .btn-primary:hover {
+      background-color: #303f9f;
+      border-color: #303f9f;
+      transform: translateY(-2px);
+    }
+    
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1055;
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar-toggle {
+        display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1100;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+      }
+      
+      .resume-modal .modal-dialog {
+        margin: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-handshake me-2"></i>DSATM Placements
+      </a>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <div class="dropdown">
+          <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user-circle me-2"></i>Recruiter
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="sidebar-menu">
+      <li>
+        <a href="recruiter-dashboard.html" class="active">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="view-applications.html">
+          <i class="fas fa-file-alt"></i> View Applications
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container-fluid">
+      <h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Recruiter Dashboard</h2>
+
+      <!-- Search and Filter -->
+      <div class="dashboard-card mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <div class="input-group" style="max-width: 400px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Search by name, skills, or department..." id="searchInput">
+          </div>
+          <select class="form-select" style="width: 200px;" id="filterSelect">
+            <option value="all">All Departments</option>
+            <option value="cs">Computer Science</option>
+            <option value="it">Information Technology</option>
+            <option value="mech">Mechanical</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Student Resumes Section -->
+      <div class="dashboard-card">
+        <h4 class="mb-4"><i class="fas fa-user-graduate me-2"></i>Student Resumes</h4>
+        
+        <div class="row" id="studentResumes">
+          <!-- Populated by JavaScript -->
+        </div>
+        
+        <div id="emptyState" class="empty-state d-none">
+          <i class="fas fa-user-graduate"></i>
+          <h4>No students found</h4>
+          <p>Try adjusting your search or filter criteria</p>
+        </div>
+
+        <nav aria-label="Page navigation" class="mt-4">
+          <ul class="pagination justify-content-center" id="pagination">
+            <!-- Populated by JavaScript -->
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resume Modal -->
+  <div class="modal fade" id="resumeModal" tabindex="-1" aria-labelledby="resumeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg resume-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resumeModalLabel">Student Resume</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="text-center mb-4">
+              <h3 id="resumeName"></h3>
+              <p id="resumeContact" class="text-muted"></p>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <h5 class="section-title">Education</h5>
+                <div id="resumeEducation"></div>
+                
+                <h5 class="section-title">Skills</h5>
+                <div id="resumeSkills" class="mb-4"></div>
+              </div>
+              
+              <div class="col-md-6">
+                <h5 class="section-title">Projects</h5>
+                <div id="resumeProjects"></div>
+                
+                <h5 class="section-title">Certifications</h5>
+                <div id="resumeCertifications"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close modal">Close</button>
+          <button type="button" class="btn btn-primary download-resume" aria-label="Download resume">
+            <i class="fas fa-download me-1"></i> Download Resume
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container">
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header bg-success text-white">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong class="me-auto">Success</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="successToastBody"></div>
+    </div>
+    <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header bg-danger text-white">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <strong class="me-auto">Error</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="errorToastBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Mock student data
+    const students = [
+      {
+        id: 1,
+        name: "Rahul Sharma",
+        department: "cs",
+        cgpa: 8.7,
+        status: "approved",
+        email: "rahul.sharma@example.com",
+        phone: "+91 9876543210",
+        skills: ["Java", "Python", "SQL", "Spring Boot", "JavaScript"],
+        education: "B.Tech in Computer Science, DSATM, 2020-2024, CGPA: 8.7/10",
+        projects: [
+          "Online Shopping System: Java, Spring Boot, MySQL - Developed a full-stack e-commerce application with user authentication and payment integration.",
+          "Student Management System: Python, Django, SQLite - Created a web application for managing student records and academic performance."
+        ],
+        certifications: ["AWS Certified Developer - Associate (2023)", "Oracle Certified Java Programmer (2022)"]
+      },
+      {
+        id: 2,
+        name: "Priya Patel",
+        department: "it",
+        cgpa: 9.2,
+        status: "pending",
+        email: "priya.patel@example.com",
+        phone: "+91 8765432109",
+        skills: ["Python", "Data Science", "Machine Learning", "TensorFlow", "R"],
+        education: "B.Tech in Information Technology, DSATM, 2020-2024, CGPA: 9.2/10",
+        projects: [
+          "Predictive Analytics Dashboard: Python, TensorFlow - Built a dashboard for real-time data predictions.",
+          "Chatbot Application: Python, NLP - Developed an AI-powered chatbot for customer support."
+        ],
+        certifications: ["Google Data Analytics Professional (2023)", "Microsoft AI Fundamentals (2022)"]
+      },
+      {
+        id: 3,
+        name: "Amit Kumar",
+        department: "mech",
+        cgpa: 7.9,
+        status: "rejected",
+        email: "amit.kumar@example.com",
+        phone: "+91 7654321098",
+        skills: ["AutoCAD", "SolidWorks", "CAD", "MATLAB", "ANSYS"],
+        education: "B.Tech in Mechanical Engineering, DSATM, 2020-2024, CGPA: 7.9/10",
+        projects: [
+          "Robotic Arm Design: AutoCAD, SolidWorks - Designed a 3DOF robotic arm for industrial automation.",
+          "Thermal Analysis System: MATLAB, ANSYS - Developed a system for thermal simulation of engine components."
+        ],
+        certifications: ["Autodesk Certified Professional (2023)", "SolidWorks Associate (2022)"]
+      }
+    ];
+
+    let filteredStudents = [...students];
+    let currentPage = 1;
+    const itemsPerPage = 6;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize tooltips
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+      // Initialize toasts
+      const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+      const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+
+      // Sidebar toggle for mobile
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.querySelector('.main-content');
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+      mainContent.addEventListener('click', () => {
+        if (window.innerWidth < 992) {
+          sidebar.classList.remove('active');
+        }
+      });
+
+      // Render initial student list
+      renderStudents();
+      setupEventListeners();
+    });
+
+    function renderStudents() {
+      const studentResumes = document.getElementById('studentResumes');
+      const emptyState = document.getElementById('emptyState');
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedStudents = filteredStudents.slice(startIndex, startIndex + itemsPerPage);
+
+      if (filteredStudents.length === 0) {
+        studentResumes.innerHTML = '';
+        emptyState.classList.remove('d-none');
+        updatePagination(0);
+        return;
+      }
+
+      emptyState.classList.add('d-none');
+      studentResumes.innerHTML = paginatedStudents.map(student => `
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="dashboard-card student-card">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h5 class="mb-0">${student.name}</h5>
+              <span class="status-badge status-${student.status}">${student.status.charAt(0).toUpperCase() + student.status.slice(1)}</span>
+            </div>
+            <p class="text-muted small mb-2">${getDepartmentName(student.department)}</p>
+            <p class="mb-2">CGPA: ${student.cgpa}/10</p>
+            <div class="mb-3">
+              ${student.skills.slice(0, 3).map(skill => `<span class="skill-badge">${skill}</span>`).join('')}
+              ${student.skills.length > 3 ? `<span class="skill-badge">+${student.skills.length - 3} more</span>` : ''}
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-outline-primary view-resume" data-student-id="${student.id}" data-bs-toggle="tooltip" title="View Resume" aria-label="View resume for ${student.name}">
+                <i class="fas fa-eye me-1"></i> View Resume
+              </button>
+              <div>
+                <button class="btn btn-outline-success me-1 approve-btn" data-student-id="${student.id}" ${student.status !== 'pending' ? 'disabled' : ''} data-bs-toggle="tooltip" title="Approve Application" aria-label="Approve application for ${student.name}">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-outline-danger reject-btn" data-student-id="${student.id}" ${student.status !== 'pending' ? 'disabled' : ''} data-bs-toggle="tooltip" title="Reject Application" aria-label="Reject application for ${student.name}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      updatePagination(filteredStudents.length);
+    }
+
+    function getDepartmentName(code) {
+      const departments = {
+        cs: "Computer Science Engineering",
+        it: "Information Technology",
+        mech: "Mechanical Engineering"
+      };
+      return departments[code] || "Unknown";
+    }
+
+    function updatePagination(totalItems) {
+      const pagination = document.getElementById('pagination');
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      let paginationHTML = '';
+      if (totalPages > 1) {
+        paginationHTML += `
+          <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+              <span aria-hidden="true">«</span>
+            </a>
+          </li>
+        `;
+        for (let i = 1; i <= totalPages; i++) {
+          paginationHTML += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+              <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>
+          `;
+        }
+        paginationHTML += `
+          <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+              <span aria-hidden="true">»</span>
+            </a>
+          </li>
+        `;
+      }
+
+      pagination.innerHTML = paginationHTML;
+      document.querySelectorAll('.page-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const page = parseInt(link.dataset.page);
+          if (!isNaN(page) && page !== currentPage) {
+            currentPage = page;
+            renderStudents();
+          }
+        });
+      });
+    }
+
+    function setupEventListeners() {
+      const resumeModal = new bootstrap.Modal(document.getElementById('resumeModal'));
+
+      // Search functionality
+      document.getElementById('searchInput').addEventListener('input', () => {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filterValue = document.getElementById('filterSelect').value;
+
+        filteredStudents = students.filter(student => {
+          const nameMatch = student.name.toLowerCase().includes(searchTerm);
+          const skillMatch = student.skills.some(skill => skill.toLowerCase().includes(searchTerm));
+          const departmentMatch = student.department.toLowerCase().includes(searchTerm);
+          const filterMatch = filterValue === 'all' || student.department === filterValue;
+          return (nameMatch || skillMatch || departmentMatch) && filterMatch;
+        });
+
+        currentPage = 1;
+        renderStudents();
+      });
+
+      // Filter functionality
+      document.getElementById('filterSelect').addEventListener('change', () => {
+        const filterValue = document.getElementById('filterSelect').value;
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+        filteredStudents = students.filter(student => {
+          const nameMatch = student.name.toLowerCase().includes(searchTerm);
+          const skillMatch = student.skills.some(skill => skill.toLowerCase().includes(searchTerm));
+          const departmentMatch = student.department.toLowerCase().includes(searchTerm);
+          const filterMatch = filterValue === 'all' || student.department === filterValue;
+          return (nameMatch || skillMatch || departmentMatch) && filterMatch;
+        });
+
+        currentPage = 1;
+        renderStudents();
+      });
+
+      // Student resume buttons
+      document.getElementById('studentResumes').addEventListener('click', (e) => {
+        const viewBtn = e.target.closest('.view-resume');
+        const approveBtn = e.target.closest('.approve-btn');
+        const rejectBtn = e.target.closest('.reject-btn');
+
+        if (viewBtn) {
+          const studentId = parseInt(viewBtn.dataset.studentId);
+          const student = students.find(s => s.id === studentId);
+          if (student) {
+            // Show loading state
+            viewBtn.disabled = true;
+            viewBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Loading...';
+            setTimeout(() => {
+              document.getElementById('resumeModalLabel').textContent = `${student.name}'s Resume`;
+              document.getElementById('resumeName').textContent = student.name;
+              document.getElementById('resumeContact').textContent = `${student.email} | ${student.phone}`;
+              document.getElementById('resumeEducation').innerHTML = `<p>${student.education}</p>`;
+              document.getElementById('resumeSkills').innerHTML = student.skills.map(skill => `<span class="skill-badge">${skill}</span>`).join('');
+              document.getElementById('resumeProjects').innerHTML = student.projects.map(project => `<p>${project}</p>`).join('');
+              document.getElementById('resumeCertifications').innerHTML = student.certifications.map(cert => `<p>${cert}</p>`).join('');
+              viewBtn.disabled = false;
+              viewBtn.innerHTML = '<i class="fas fa-eye me-1"></i> View Resume';
+              resumeModal.show();
+            }, 500);
+          } else {
+            document.getElementById('errorToastBody').textContent = 'Student not found.';
+            errorToast.show();
+          }
+        } else if (approveBtn && !approveBtn.disabled) {
+          const studentId = parseInt(approveBtn.dataset.studentId);
+          const student = students.find(s => s.id === studentId);
+          if (confirm(`Approve application for ${student.name}?`)) {
+            approveBtn.disabled = true;
+            approveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>';
+            setTimeout(() => {
+              updateStudentStatus(studentId, 'approved');
+              approveBtn.disabled = false;
+              approveBtn.innerHTML = '<i class="fas fa-check"></i>';
+              document.getElementById('successToastBody').textContent = `Application for ${student.name} approved.`;
+              successToast.show();
+            }, 500);
+          }
+        } else if (rejectBtn && !rejectBtn.disabled) {
+          const studentId = parseInt(rejectBtn.dataset.studentId);
+          const student = students.find(s => s.id === studentId);
+          if (confirm(`Reject application for ${student.name}?`)) {
+            rejectBtn.disabled = true;
+            rejectBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>';
+            setTimeout(() => {
+              updateStudentStatus(studentId, 'rejected');
+              rejectBtn.disabled = false;
+              rejectBtn.innerHTML = '<i class="fas fa-times"></i>';
+              document.getElementById('successToastBody').textContent = `Application for ${student.name} rejected.`;
+              successToast.show();
+            }, 500);
+          }
+        }
+      });
+
+      // Download resume
+      document.querySelector('.download-resume').addEventListener('click', () => {
+        const downloadBtn = document.querySelector('.download-resume');
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Downloading...';
+        setTimeout(() => {
+          if (Math.random() < 0.1) {
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = '<i class="fas fa-download me-1"></i> Download Resume';
+            document.getElementById('errorToastBody').textContent = 'Failed to download resume. Please try again.';
+            errorToast.show();
+            return;
+          }
+          downloadBtn.disabled = false;
+          downloadBtn.innerHTML = '<i class="fas fa-download me-1"></i> Download Resume';
+          document.getElementById('successToastBody').textContent = 'Resume downloaded successfully.';
+          successToast.show();
+        }, 1000);
+      });
+    }
+
+    function updateStudentStatus(studentId, status) {
+      const studentIndex = students.findIndex(s => s.id === studentId);
+      if (studentIndex !== -1) {
+        students[studentIndex].status = status;
+        filteredStudents = filteredStudents.map(s => s.id === studentId ? { ...s, status } : s);
+        renderStudents();
+      } else {
+        document.getElementById('errorToastBody').textContent = 'Student not found.';
+        errorToast.show();
+      }
+    }
+  </script>
+</body>
+</html>

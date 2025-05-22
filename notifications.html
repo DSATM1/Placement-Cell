@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #f5f5f5;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      color: white !important;
+    }
+    
+    .dashboard-section {
+      padding: 2rem 0;
+      min-height: calc(100vh - 120px);
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+    }
+    
+    .notification-item {
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+    
+    .notification-item.unread {
+      border-left-color: var(--primary-color);
+      background-color: #f8f9fa;
+    }
+    
+    .notification-item:hover {
+      background-color: #f0f4f8;
+    }
+    
+    .notification-time {
+      font-size: 0.75rem;
+      color: #6c757d;
+    }
+    
+    .notification-type {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    
+    .notification-type.alert {
+      background-color: #dc3545;
+    }
+    
+    .notification-type.info {
+      background-color: #0dcaf0;
+    }
+    
+    .notification-type.success {
+      background-color: #198754;
+    }
+    
+    .notification-type.warning {
+      background-color: #ffc107;
+    }
+    
+    .mark-all-read {
+      cursor: pointer;
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    
+    footer {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #dee2e6;
+    }
+    
+    .notification-actions {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .notification-item:hover .notification-actions {
+      opacity: 1;
+    }
+    
+    .filter-badge {
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top navbar-dark">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="index.html">
+        <i class="bi bi-briefcase me-2"></i>DSATM Placements
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+        <div class="ms-auto d-flex align-items-center gap-3">
+          <div class="dropdown">
+            
+            
+          </div>
+          <span class="text-white">Welcome, <strong>Admin</strong></span>
+          
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Notifications Section -->
+  <section class="dashboard-section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2 class="mb-3 mb-md-0">
+          <i class="bi bi-bell me-2"></i>Notifications
+        </h2>
+        <div class="d-flex align-items-center">
+          <span class="mark-all-read me-3" id="markAllRead">
+            <i class="bi bi-check-all me-1"></i>Mark all as read
+          </span>
+          <button class="btn btn-outline-primary btn-sm" id="refreshNotifications">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <div class="d-flex flex-wrap">
+          <span class="filter-badge badge bg-primary" data-filter="all">All</span>
+          <span class="filter-badge badge bg-success" data-filter="success">Placements</span>
+          <span class="filter-badge badge bg-info" data-filter="info">Updates</span>
+          <span class="filter-badge badge bg-warning" data-filter="warning">Reminders</span>
+          <span class="filter-badge badge bg-danger" data-filter="alert">Alerts</span>
+          <span class="filter-badge badge bg-secondary" data-filter="unread">Unread</span>
+        </div>
+      </div>
+      
+      <div class="dashboard-card">
+        <div id="notificationsLoading" class="text-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading notifications...</span>
+          </div>
+        </div>
+        
+        <ul class="list-group list-group-flush" id="notificationsList" aria-live="polite">
+          <!-- Notifications will be loaded here -->
+        </ul>
+        
+        <div id="noNotifications" class="empty-state d-none">
+          <i class="bi bi-bell-slash"></i>
+          <h4>No notifications</h4>
+          <p>You don't have any notifications yet</p>
+        </div>
+        
+        
+      </div>
+    </div>
+  </section>
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Mock data - in a real app, this would come from an API
+    const mockNotifications = [
+      { 
+        id: 1,
+        message: "TCS recruitment drive scheduled for May 15th in Main Auditorium",
+        type: "success",
+        date: "2025-05-10T09:30:00",
+        read: false,
+        important: true
+      },
+      { 
+        id: 2,
+        message: "Infosys has extended their application deadline to May 20th",
+        type: "info",
+        date: "2025-05-09T14:15:00",
+        read: false,
+        important: false
+      },
+      { 
+        id: 3,
+        message: "Reminder: Resume workshop tomorrow at 2 PM in Seminar Hall 2",
+        type: "warning",
+        date: "2025-05-08T16:45:00",
+        read: true,
+        important: false
+      },
+      { 
+        id: 4,
+        message: "Alert: 5 students have not submitted their placement forms",
+        type: "alert",
+        date: "2025-05-07T11:20:00",
+        read: false,
+        important: true
+      },
+      { 
+        id: 5,
+        message: "Wipro has selected 12 students for final interview round",
+        type: "success",
+        date: "2025-05-06T17:30:00",
+        read: true,
+        important: true
+      },
+      { 
+        id: 6,
+        message: "New recruiter registered: Tech Solutions Inc.",
+        type: "info",
+        date: "2025-05-05T10:10:00",
+        read: true,
+        important: false
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderNotifications();
+      setupEventListeners();
+      
+      // Hide loading spinner after content loads
+      setTimeout(() => {
+        document.getElementById('notificationsLoading').style.display = 'none';
+      }, 500);
+    });
+
+    function renderNotifications(filter = 'all') {
+      const container = document.getElementById('notificationsList');
+      const emptyState = document.getElementById('noNotifications');
+      
+      let filteredNotifications = mockNotifications;
+      
+      if (filter !== 'all') {
+        if (filter === 'unread') {
+          filteredNotifications = mockNotifications.filter(n => !n.read);
+        } else {
+          filteredNotifications = mockNotifications.filter(n => n.type === filter);
+        }
+      }
+      
+      // Sort by date (newest first)
+      filteredNotifications.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      if (filteredNotifications.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('d-none');
+        return;
+      }
+      
+      emptyState.classList.add('d-none');
+      
+      container.innerHTML = filteredNotifications.map(notification => `
+        <li class="list-group-item notification-item ${notification.read ? '' : 'unread'}" data-notification-id="${notification.id}">
+          <div class="d-flex align-items-start">
+            <span class="notification-type ${notification.type}"></span>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between">
+                <p class="mb-1">${notification.message}</p>
+                <div class="notification-actions">
+                  <button class="btn btn-sm btn-link text-muted mark-as-read" title="Mark as read">
+                    <i class="bi bi-check"></i>
+                  </button>
+                  <button class="btn btn-sm btn-link text-danger delete-notification" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <small class="notification-time">
+                ${formatDate(notification.date)}
+              </small>
+            </div>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function setupEventListeners() {
+      // Filter badges
+      document.querySelectorAll('.filter-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+          document.querySelectorAll('.filter-badge').forEach(b => b.classList.remove('active'));
+          badge.classList.add('active');
+          renderNotifications(badge.dataset.filter);
+        });
+      });
+      
+      // Mark all as read
+      document.getElementById('markAllRead').addEventListener('click', () => {
+        mockNotifications.forEach(n => n.read = true);
+        renderNotifications(document.querySelector('.filter-badge.active').dataset.filter);
+      });
+      
+      // Refresh button
+      document.getElementById('refreshNotifications').addEventListener('click', () => {
+        document.getElementById('notificationsLoading').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('notificationsLoading').style.display = 'none';
+          renderNotifications(document.querySelector('.filter-badge.active').dataset.filter);
+        }, 800);
+      });
+      
+      // Delegated events for notification actions
+      document.getElementById('notificationsList').addEventListener('click', (e) => {
+        const notificationId = parseInt(e.target.closest('.notification-item')?.dataset.notificationId);
+        if (!notificationId) return;
+        
+        if (e.target.closest('.mark-as-read')) {
+          // Mark as read
+          const notification = mockNotifications.find(n => n.id === notificationId);
+          if (notification) notification.read = true;
+          e.target.closest('.notification-item').classList.remove('unread');
+        } else if (e.target.closest('.delete-notification')) {
+          // Delete notification
+          if (confirm('Are you sure you want to delete this notification?')) {
+            const index = mockNotifications.findIndex(n => n.id === notificationId);
+            if (index !== -1) {
+              mockNotifications.splice(index, 1);
+              renderNotifications(document.querySelector('.filter-badge.active').dataset.filter);
+            }
+          }
+        }
+      });
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+      
+      if (diffInHours < 24) {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      } else if (diffInHours < 48) {
+        return 'Yesterday ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      } else {
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + 
+               ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    }
+  </script>
+</body>
+</html>

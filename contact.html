@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact the DSATM Placement Cell for inquiries and support">
+  <title>Contact Us | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff5722;
+      --dark-color: #2c3e50;
+      --light-color: #f8f9fa;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+      transition: all 0.3s ease;
+    }
+    
+    .dark-mode {
+      background-color: #1a1a1a;
+      color: #f0f0f0;
+    }
+    
+    .dark-mode .navbar,
+    .dark-mode footer {
+      background-color: #121212 !important;
+    }
+    
+    .dark-mode .contact-card,
+    .dark-mode .contact-info-card {
+      background-color: #2d2d2d;
+      color: #f0f0f0;
+      border-color: #444;
+    }
+    
+    .dark-mode .form-control {
+      background-color: #333;
+      color: #f0f0f0;
+      border-color: #555;
+    }
+    
+    .dark-mode .form-control:focus {
+      background-color: #333;
+      color: #f0f0f0;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.25);
+    }
+    
+    .dark-mode .form-label {
+      color: #f0f0f0;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: white !important;
+    }
+    
+    .nav-link {
+      color: rgba(255, 255, 255, 0.85) !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link:hover {
+      color: white !important;
+    }
+    
+    .contact-section {
+      padding: 80px 0;
+      background-color: white;
+    }
+    
+    .contact-card {
+      background: white;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .contact-info-section {
+      padding: 60px 0;
+      background-color: #f9f9f9;
+    }
+    
+    .contact-info-card {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      height: 100%;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .contact-info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .contact-info-card i {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+    
+    .contact-info-card h5 {
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .map-container {
+      height: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 50px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--primary-color);
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.25);
+    }
+    
+    footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+    }
+    
+    .social-links {
+      margin: 20px 0;
+    }
+    
+    .social-links a {
+      color: white;
+      margin: 0 10px;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .social-links a:hover {
+      color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    
+    .footer-links a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--secondary-color);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .contact-card {
+        padding: 25px;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container px-4">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-handshake me-2"></i>DSATM Placements
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+         
+        </ul>
+        <div class="ms-auto d-flex align-items-center gap-3">
+          
+          <a href="login.html" class="btn btn-light">
+            <i class="fas fa-sign-in-alt me-2"></i>Login
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contact Form Section -->
+  <section class="contact-section">
+    <div class="container">
+      <h2 class="text-center section-title">Get In Touch</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="contact-card">
+            <div class="row">
+              <div class="col-md-6">
+                <form id="contactForm">
+                  <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <select class="form-select" id="subject" required>
+                      <option value="" selected disabled>Select a subject</option>
+                      <option value="placement">Placement Inquiry</option>
+                      <option value="recruiter">Recruiter Inquiry</option>
+                      <option value="student">Student Support</option>
+                      <option value="general">General Inquiry</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="message" class="form-label">Your Message</label>
+                    <textarea class="form-control" id="message" rows="5" placeholder="Enter your message" required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                  </button>
+                </form>
+              </div>
+              <div class="col-md-6">
+                <div class="h-100 d-flex flex-column justify-content-center">
+                  <h4 class="mb-4">Contact Information</h4>
+                  <div class="mb-4">
+                    <h6><i class="fas fa-map-marker-alt text-primary me-2"></i> Address</h6>
+                    <p>Dayananda Sagar Academy of Technology & Management<br>
+                    Udayapura, Kanakapura Road, Bangalore - 560082</p>
+                  </div>
+                  <div class="mb-4">
+                    <h6><i class="fas fa-phone text-primary me-2"></i> Phone</h6>
+                    <p>+91 80 1234 5678<br>+91 98 7654 3210</p>
+                  </div>
+                  <div class="mb-4">
+                    <h6><i class="fas fa-envelope text-primary me-2"></i> Email</h6>
+                    <p>placements@dsatm.edu.in<br>support@dsatm.edu.in</p>
+                  </div>
+                  <div class="mt-auto">
+                    <h6 class="mb-3">Connect With Us</h6>
+                    <div class="d-flex gap-3">
+                      <a href="#" class="text-primary"><i class="fab fa-facebook-f fa-lg"></i></a>
+                      <a href="#" class="text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+                      <a href="#" class="text-primary"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                      <a href="#" class="text-primary"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Info Section -->
+  <section class="contact-info-section">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="contact-info-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h5>Visit Us</h5>
+            <p>Dayananda Sagar Academy of Technology & Management<br>
+            Udayapura, Kanakapura Road<br>
+            Bangalore - 560082</p>
+            <a href="#" class="btn btn-outline-primary mt-3">Get Directions</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-info-card">
+            <i class="fas fa-clock"></i>
+            <h5>Working Hours</h5>
+            <p><strong>Monday - Friday:</strong> 9:00 AM - 5:00 PM<br>
+            <strong>Saturday:</strong> 9:00 AM - 1:00 PM<br>
+            <strong>Sunday:</strong> Closed</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-info-card">
+            <i class="fas fa-headset"></i>
+            <h5>Quick Support</h5>
+            <p>For urgent inquiries, please contact our support team directly:</p>
+            <p class="h4 mt-3">+91 98 7654 3210</p>
+            <a href="mailto:support@dsatm.edu.in" class="btn btn-outline-primary mt-3">Email Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.987441714035!2d77.5635603147689!3d12.90899099089175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae15631050e58d%3A0x8fbd7c1b8e7e7a7!2sDayananda%20Sagar%20Academy%20of%20Technology%20and%20Management!5e0!3m2!1sen!2sin!4v1623834567895!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5><i class="fas fa-handshake me-2"></i>DSATM Placements</h5>
+          <p>Empowering students and recruiters through innovative placement solutions since 2010.</p>
+        </div>
+        <div class="col-md-4">
+          <h5>Quick Links</h5>
+          <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h5>Connect With Us</h5>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+          <p><i class="fas fa-envelope me-2"></i>placements@dsatm.edu.in</p>
+          <p><i class="fas fa-phone me-2"></i>+91 80 1234 5678</p>
+        </div>
+      </div>
+      <hr style="background-color: rgba(255,255,255,0.1);">
+      <p class="mb-0">© 2025 DSATM Placement Cell. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const body = document.body;
+      
+      // Check for saved dark mode preference
+      if (localStorage.getItem('darkMode') === 'enabled') {
+        body.classList.add('dark-mode');
+        darkModeToggle.innerHTML = '<i class="fas fa-sun me-2"></i>Light Mode';
+      }
+      
+      darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+          localStorage.setItem('darkMode', 'enabled');
+          darkModeToggle.innerHTML = '<i class="fas fa-sun me-2"></i>Light Mode';
+        } else {
+          localStorage.setItem('darkMode', 'disabled');
+          darkModeToggle.innerHTML = '<i class="fas fa-moon me-2"></i>Dark Mode';
+        }
+      });
+      
+      // Form submission
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          // Here you would typically send the form data to a server
+          alert('Thank you for your message! We will get back to you soon.');
+          contactForm.reset();
+        });
+      }
+      
+      // Restrict access function (placeholder)
+      function restrictAccess() {
+        // Your access restriction logic here
+      }
+      
+      restrictAccess();
+    });
+  </script>
+</body>
+</html>

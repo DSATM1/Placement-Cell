@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Students | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #f5f5f5;
+      --success-color: #4caf50;
+      --danger-color: #f44336;
+      --warning-color: #ff9800;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: white !important;
+    }
+
+    .nav-link {
+      color: white !important;
+    }
+
+    .nav-link.active {
+      font-weight: 600;
+    }
+
+    .dashboard-section {
+      padding: 2rem 0;
+      min-height: calc(100vh - 120px);
+    }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+    }
+
+    .status-badge {
+      padding: 0.35em 0.65em;
+      font-size: 0.75em;
+      font-weight: 600;
+      border-radius: 50rem;
+    }
+
+    .status-active {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status-inactive {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .search-box {
+      max-width: 300px;
+    }
+
+    .action-btn {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .pagination .page-item.active .page-link {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .pagination .page-link {
+      color: var(--primary-color);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #dee2e6;
+    }
+
+    .modal-header {
+      background-color: var(--primary-color);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top navbar-dark">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="index.html">
+        <i class="bi bi-briefcase me-2"></i>DSATM Placements
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <!-- Navigation links will be added here -->
+        </ul>
+        <div class="ms-auto d-flex align-items-center gap-3">
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i> Admin
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="login.html">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Manage Students Section -->
+  <section class="dashboard-section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2 class="mb-3 mb-md-0">
+          <i class="bi bi-person-graduate me-2"></i>Manage Students
+        </h2>
+        <div class="d-flex gap-3 flex-wrap">
+          <div class="search-box">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search students..." id="searchInput">
+              <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="exportStudents()">
+            <i class="bi bi-download me-1"></i>Export CSV
+          </button>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+            <i class="bi bi-plus-lg me-1"></i>Add Student
+          </button>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary filter-btn active" data-filter="all">All</button>
+            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="active">Active</button>
+            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="inactive">Inactive</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="dashboard-card">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width: 25%">Name</th>
+                    <th style="width: 20%">Email</th>
+                    <th style="width: 20%">USN</th>
+                    <th style="width: 15%">Phone</th>
+                    <th style="width: 10%">Status</th>
+                    <th style="width: 10%">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="emptyState" class="empty-state d-none">
+              <i class="bi bi-person-graduate"></i>
+              <h4>No students found</h4>
+              <p>Try adjusting your search or filter criteria</p>
+              <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                <i class="bi bi-plus-lg me-1"></i>Add New Student
+              </button>
+            </div>
+
+            <nav aria-label="Student pagination" class="mt-4">
+              <ul class="pagination justify-content-center" id="pagination">
+                <!-- Pagination will be added here -->
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add Student Modal -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addStudentForm">
+            <div class="mb-3">
+              <label for="studentName" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="studentName" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="studentEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentUSN" class="form-label">USN</label>
+              <input type="text" class="form-control" id="studentUSN" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentPhone" class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="studentPhone">
+            </div>
+            <div class="mb-3">
+              <label for="studentStatus" class="form-label">Status</label>
+              <select class="form-select" id="studentStatus">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveStudentBtn">Save Student</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Student Modal -->
+  <div class="modal fade" id="viewStudentModal" tabindex="-1" aria-labelledby="viewStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewStudentModalLabel">Student Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="studentDetails">
+          <!-- Details will be populated here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Mock data - in a real app, this would come from an API
+    const mockStudents = [
+      { id: 1, name: "Aarav Sharma", email: "aarav@dsatm.edu.in", usn: "1DS21CS001", phone: "+91 98765 43210", status: "active", registrationDate: "2025-01-10" },
+      { id: 2, name: "Priya Patel", email: "priya@dsatm.edu.in", usn: "1DS21CS002", phone: "+91 87654 32109", status: "inactive", registrationDate: "2025-01-15" },
+      { id: 3, name: "Vikram Singh", email: "vikram@dsatm.edu.in", usn: "1DS21CS003", phone: "+91 76543 21098", status: "active", registrationDate: "2025-02-01" },
+      { id: 4, name: "Sneha Reddy", email: "sneha@dsatm.edu.in", usn: "1DS21CS004", phone: "+91 65432 10987", status: "active", registrationDate: "2025-02-10" },
+      { id: 5, name: "Rahul Kumar", email: "rahul@dsatm.edu.in", usn: "1DS21CS005", phone: "+91 54321 09876", status: "inactive", registrationDate: "2025-03-05" },
+      { id: 6, name: "Ananya Gupta", email: "ananya@dsatm.edu.in", usn: "1DS21CS006", phone: "+91 43210 98765", status: "active", registrationDate: "2025-03-15" },
+      { id: 7, name: "Arjun Nair", email: "arjun@dsatm.edu.in", usn: "1DS21CS007", phone: "+91 32109 87654", status: "active", registrationDate: "2025-03-20" },
+      { id: 8, name: "Kavya Menon", email: "kavya@dsatm.edu.in", usn: "1DS21CS008", phone: "+91 21098 76543", status: "inactive", registrationDate: "2025-04-01" },
+      { id: 9, name: "Rohan Desai", email: "rohan@dsatm.edu.in", usn: "1DS21CS009", phone: "+91 10987 65432", status: "active", registrationDate: "2025-04-05" },
+      { id: 10, name: "Ishita Joshi", email: "ishita@dsatm.edu.in", usn: "1DS21CS010", phone: "+91 09876 54321", status: "active", registrationDate: "2025-04-10" }
+    ];
+
+    // Current page for pagination
+    let currentPage = 1;
+    const itemsPerPage = 5;
+    let filteredStudents = [...mockStudents];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStudentTable();
+      setupPagination();
+      setupEventListeners();
+    });
+
+    function renderStudentTable(students = filteredStudents, page = currentPage) {
+      const studentTableBody = document.getElementById('studentTableBody');
+      const emptyState = document.getElementById('emptyState');
+
+      if (students.length === 0) {
+        studentTableBody.innerHTML = '';
+        emptyState.classList.remove('d-none');
+        return;
+      }
+
+      emptyState.classList.add('d-none');
+
+      // Calculate pagination
+      const startIndex = (page - 1) * itemsPerPage;
+      const paginatedStudents = students.slice(startIndex, startIndex + itemsPerPage);
+
+      studentTableBody.innerHTML = paginatedStudents.map(student => `
+        <tr>
+          <td>
+            <strong>${student.name}</strong>
+            <div class="text-muted small">Registered: ${student.registrationDate}</div>
+          </td>
+          <td>
+            <a href="mailto:${student.email}">${student.email}</a>
+          </td>
+          <td>${student.usn}</td>
+          <td>${student.phone}</td>
+          <td>
+            <span class="status-badge status-${student.status}">
+              ${student.status.charAt(0).toUpperCase() + student.status.slice(1)}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary action-btn view-student" data-student-id="${student.id}" title="View">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-success action-btn activate-student" data-student-id="${student.id}" title="Activate" ${student.status === 'active' ? 'disabled' : ''}>
+                <i class="bi bi-check-lg"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger action-btn deactivate-student" data-student-id="${student.id}" title="Deactivate" ${student.status === 'inactive' ? 'disabled' : ''}>
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      // Update pagination
+      updatePagination(students.length);
+    }
+
+    function setupPagination() {
+      const pagination = document.getElementById('pagination');
+      const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+
+      let paginationHTML = '';
+
+      // Always show at least the current page, unless no items
+      if (filteredStudents.length > 0) {
+        // Previous button
+        paginationHTML += `
+          <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+              <span aria-hidden="true">«</span>
+            </a>
+          </li>
+        `;
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          paginationHTML += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+              <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>
+          `;
+        }
+
+        // Next button
+        paginationHTML += `
+          <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+              <span aria-hidden="true">»</span>
+            </a>
+          </li>
+        `;
+      }
+
+      pagination.innerHTML = paginationHTML;
+
+      // Add event listeners to pagination links
+      document.querySelectorAll('.page-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const page = parseInt(link.dataset.page);
+          if (!isNaN(page) && page !== currentPage) {
+            currentPage = page;
+            renderStudentTable();
+          }
+        });
+      });
+    }
+
+    function updatePagination(totalItems) {
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      // If current page is beyond the new total pages, reset to last page
+      if (currentPage > totalPages && totalPages > 0) {
+        currentPage = totalPages;
+      } else if (totalPages === 0) {
+        currentPage = 1;
+      }
+
+      setupPagination();
+    }
+
+    function setupEventListeners() {
+      // Filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filter = btn.dataset.filter;
+          if (filter === 'all') {
+            filteredStudents = [...mockStudents];
+          } else {
+            filteredStudents = mockStudents.filter(s => s.status === filter);
+          }
+
+          currentPage = 1;
+          renderStudentTable();
+        });
+      });
+
+      // Search functionality
+      document.getElementById('searchButton').addEventListener('click', performSearch);
+      document.getElementById('searchInput').addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          performSearch();
+        }
+      });
+
+      // Save student button
+      document.getElementById('saveStudentBtn').addEventListener('click', addNewStudent);
+
+      // Action buttons (delegated events)
+      document.getElementById('studentTableBody').addEventListener('click', (e) => {
+        const activateBtn = e.target.closest('.activate-student');
+        const deactivateBtn = e.target.closest('.deactivate-student');
+        const viewBtn = e.target.closest('.view-student');
+
+        if (activateBtn) {
+          const studentId = parseInt(activateBtn.dataset.studentId);
+          updateStudentStatus(studentId, 'active');
+        } else if (deactivateBtn) {
+          const studentId = parseInt(deactivateBtn.dataset.studentId);
+          updateStudentStatus(studentId, 'inactive');
+        } else if (viewBtn) {
+          const studentId = parseInt(viewBtn.dataset.studentId);
+          showStudentDetails(studentId);
+        }
+      });
+    }
+
+    function performSearch() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      if (searchTerm.trim() === '') {
+        filteredStudents = [...mockStudents];
+      } else {
+        filteredStudents = mockStudents.filter(student =>
+          student.name.toLowerCase().includes(searchTerm) ||
+          student.email.toLowerCase().includes(searchTerm) ||
+          student.usn.toLowerCase().includes(searchTerm) ||
+          student.phone.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      currentPage = 1;
+      renderStudentTable();
+    }
+
+    function updateStudentStatus(id, newStatus) {
+      const studentIndex = mockStudents.findIndex(s => s.id === id);
+      if (studentIndex !== -1) {
+        mockStudents[studentIndex].status = newStatus;
+
+        // Update filtered students if needed
+        const filter = document.querySelector('.filter-btn.active').dataset.filter;
+        if (filter !== 'all' && filter !== newStatus) {
+          filteredStudents = filteredStudents.filter(s => s.id !== id);
+        }
+
+        renderStudentTable();
+        alert(`Student status updated to ${newStatus}`);
+      }
+    }
+
+    function showStudentDetails(id) {
+      const student = mockStudents.find(s => s.id === id);
+      if (!student) return;
+
+      const modal = new bootstrap.Modal(document.getElementById('viewStudentModal'));
+      const detailsContainer = document.getElementById('studentDetails');
+
+      detailsContainer.innerHTML = `
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Full Name:</div>
+          <div class="col-md-8">${student.name}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Email:</div>
+          <div class="col-md-8"><a href="mailto:${student.email}">${student.email}</a></div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">USN:</div>
+          <div class="col-md-8">${student.usn}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Phone:</div>
+          <div class="col-md-8">${student.phone}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Status:</div>
+          <div class="col-md-8">
+            <span class="status-badge status-${student.status}">
+              ${student.status.charAt(0).toUpperCase() + student.status.slice(1)}
+            </span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4 fw-bold">Registration Date:</div>
+          <div class="col-md-8">${student.registrationDate}</div>
+        </div>
+      `;
+
+      modal.show();
+    }
+
+    function addNewStudent() {
+      const name = document.getElementById('studentName').value;
+      const email = document.getElementById('studentEmail').value;
+      const usn = document.getElementById('studentUSN').value;
+      const phone = document.getElementById('studentPhone').value;
+      const status = document.getElementById('studentStatus').value;
+
+      if (!name || !email || !usn) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      // Add new student
+      const newId = Math.max(...mockStudents.map(s => s.id)) + 1;
+      const newStudent = {
+        id: newId,
+        name,
+        email,
+        usn,
+        phone,
+        status,
+        registrationDate: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+      };
+
+      mockStudents.unshift(newStudent);
+
+      // Add to filtered students if it matches the current filter
+      const filter = document.querySelector('.filter-btn.active').dataset.filter;
+      if (filter === 'all' || filter === status) {
+        filteredStudents.unshift(newStudent);
+      }
+
+      // Reset the form
+      document.getElementById('addStudentForm').reset();
+
+      // Close the modal
+      bootstrap.Modal.getInstance(document.getElementById('addStudentModal')).hide();
+
+      // Refresh the table
+      currentPage = 1;
+      renderStudentTable();
+
+      alert('New student added successfully!');
+    }
+
+    function exportStudents() {
+      const headers = ["Name", "Email", "USN", "Phone", "Status", "Registration Date"];
+      const csvContent = [
+        headers.join(","),
+        ...filteredStudents.map(student =>
+          `"${student.name}","${student.email}","${student.usn}","${student.phone}","${student.status}","${student.registrationDate}"`
+        )
+      ].join("\n");
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `students_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>

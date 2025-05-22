@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Applications | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --light-color: #f8f9fa;
+      --success-color: #4caf50;
+      --info-color: #2196f3;
+      --warning-color: #ffc107;
+      --danger-color: #f44336;
+      --sidebar-width: 250px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      padding: 15px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: white !important;
+    }
+    
+    .nav-link {
+      color: white !important;
+      margin: 0 10px;
+      font-weight: 500;
+    }
+    
+    .nav-link.active {
+      font-weight: 600;
+      border-bottom: 2px solid white;
+    }
+    
+    .sidebar {
+      width: var(--sidebar-width);
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      padding-top: 80px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-right: 1px solid #e9ecef;
+      z-index: 999;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar-menu a {
+      display: block;
+      padding: 12px 20px;
+      color: #333;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar-menu a:hover {
+      background-color: #e9ecef;
+      border-left: 3px solid var(--primary-color);
+    }
+    
+    .sidebar-menu a.active {
+      background-color: #e3f2fd;
+      border-left: 3px solid var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .sidebar-menu i {
+      width: 25px;
+      margin-right: 10px;
+      text-align: center;
+    }
+    
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 30px;
+      padding-top: 90px;
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9ecef;
+    }
+    
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+    
+    .form-control, .form-select {
+      border-radius: 5px;
+      padding: 8px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(63, 81, 181, 0.25);
+    }
+    
+    .skill-badge {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+    
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-approved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .status-rejected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .modal-content {
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-header {
+      background-color: var(--primary-color);
+      color: white;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+    
+    .pagination .page-item.active .page-link {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    .pagination .page-link {
+      color: var(--primary-color);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #dee2e6;
+    }
+    
+    .input-group .btn-clear {
+      border-radius: 5px;
+    }
+    
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1100;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar-toggle {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container px-4">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-handshake me-2"></i>DSATM Placements
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="jobs.html">Jobs</a>
+          </li>
+          <li class="nav-item">
+            <div class="dropdown">
+              <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle me-2"></i>Recruiter
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="sidebar-menu">
+      <li>
+        <a href="recruiter-dashboard.html">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="view-applications.html" class="active">
+          <i class="fas fa-file-alt"></i> View Applications
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <h2 class="mb-4"><i class="fas fa-file-alt me-2"></i>View Applications</h2>
+
+      <!-- Search and Filter -->
+      <div class="dashboard-card mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <div class="input-group" style="max-width: 400px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Search by name, skills, or department..." id="searchInput">
+            <button class="btn btn-outline-secondary btn-clear" id="clearSearch"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="d-flex gap-3">
+            <select class="form-select" style="width: 200px;" id="filterDepartment">
+              <option value="all">All Departments</option>
+              <option value="cs">Computer Science</option>
+              <option value="it">Information Technology</option>
+              <option value="mech">Mechanical</option>
+            </select>
+            <select class="form-select" style="width: 150px;" id="filterStatus">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="text-muted mt-3" id="resultCount"></div>
+      </div>
+
+      <!-- Applications Section -->
+      <div class="dashboard-card">
+        <h4 class="section-title"><i class="fas fa-file-alt me-2"></i>Student Applications</h4>
+        
+        <div class="row" id="applicationList">
+          <!-- Populated by JavaScript -->
+        </div>
+        
+        <div id="emptyState" class="empty-state d-none">
+          <i class="fas fa-file-alt"></i>
+          <h4>No applications found</h4>
+          <p>Try adjusting your search or filter criteria</p>
+        </div>
+
+        <nav aria-label="Page navigation" class="mt-4">
+          <ul class="pagination justify-content-center" id="pagination">
+            <!-- Populated by JavaScript -->
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Modal -->
+  <div class="modal fade" id="applicationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="applicationModalLabel">Student Application</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="text-center mb-4">
+              <h3 id="applicationName"></h3>
+              <p id="applicationContact" class="text-muted"></p>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h5 class="section-title">Profile</h5>
+                <div id="applicationProfile"></div>
+                <h5 class="section-title mt-4">Skills</h5>
+                <div id="applicationSkills" class="mb-4"></div>
+              </div>
+              <div class="col-md-6">
+                <h5 class="section-title">Application Details</h5>
+                <div id="applicationDetails"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary download-resume">
+            <i class="fas fa-download me-1"></i> Download Resume
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Shared server data (merged from student-profile.html and view-applications.html)
+    let serverData = {
+      profile: {
+        fullName: 'John Doe',
+        email: 'john.doe@example.com',
+        phone: '+91 9876543210',
+        cgpa: 8.5,
+        department: 'cs',
+        year: '4th Year',
+        skills: ['Java', 'Python', 'Data Structures', 'SQL'],
+        about: 'I am a final year Computer Science student with strong programming skills and passion for software development.'
+      },
+      applications: [
+        {
+          id: 1,
+          name: "Rahul Sharma",
+          email: "rahul.sharma@example.com",
+          phone: "+91 9876543210",
+          degree: "B.Tech in Computer Science",
+          university: "Dayananda Sagar Academy of Technology & Management",
+          graduationYear: "2024",
+          cgpa: 8.5,
+          year: "4th Year",
+          about: "Passionate coder with expertise in full-stack development.",
+          skills: ["Java", "Python", "SQL", "Spring Boot", "JavaScript"],
+          department: "cs",
+          status: "approved",
+          jobTitle: "Software Engineer",
+          appliedDate: "2023-10-15"
+        },
+        {
+          id: 2,
+          name: "Priya Patel",
+          email: "priya.patel@example.com",
+          phone: "+91 8765432109",
+          degree: "B.Tech in Information Technology",
+          university: "Dayananda Sagar Academy of Technology & Management",
+          graduationYear: "2024",
+          cgpa: 8.2,
+          year: "4th Year",
+          about: "Data enthusiast skilled in machine learning and analytics.",
+          skills: ["Python", "Data Science", "Machine Learning", "TensorFlow", "R"],
+          department: "it",
+          status: "pending",
+          jobTitle: "Data Analyst",
+          appliedDate: "2023-10-16"
+        },
+        {
+          id: 3,
+          name: "Amit Kumar",
+          email: "amit.kumar@example.com",
+          phone: "+91 7654321098",
+          degree: "B.Tech in Mechanical Engineering",
+          university: "Dayananda Sagar Academy of Technology & Management",
+          graduationYear: "2024",
+          cgpa: 7.8,
+          year: "4th Year",
+          about: "Mechanical engineer with strong design and simulation skills.",
+          skills: ["AutoCAD", "SolidWorks", "CAD", "MATLAB", "ANSYS"],
+          department: "mech",
+          status: "rejected",
+          jobTitle: "Mechanical Design Engineer",
+          appliedDate: "2023-10-17"
+        }
+      ]
+    };
+
+    let filteredApplications = [...serverData.applications];
+    let currentPage = 1;
+    const itemsPerPage = 6;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderApplications();
+      setupEventListeners();
+      
+      // Sidebar toggle for mobile
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.querySelector('.main-content');
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+      mainContent.addEventListener('click', () => {
+        if (window.innerWidth < 992) {
+          sidebar.classList.remove('active');
+        }
+      });
+    });
+
+    function renderApplications() {
+      const applicationList = document.getElementById('applicationList');
+      const emptyState = document.getElementById('emptyState');
+      const resultCount = document.getElementById('resultCount');
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedApplications = filteredApplications.slice(startIndex, startIndex + itemsPerPage);
+
+      resultCount.textContent = `${filteredApplications.length} application${filteredApplications.length !== 1 ? 's' : ''} found`;
+
+      if (filteredApplications.length === 0) {
+        applicationList.innerHTML = '';
+        emptyState.classList.remove('d-none');
+        updatePagination(0);
+        return;
+      }
+
+      emptyState.classList.add('d-none');
+      applicationList.innerHTML = paginatedApplications.map(app => `
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h5 class="mb-0">${app.name}</h5>
+              <span class="status-badge status-${app.status}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span>
+            </div>
+            <p class="text-muted small mb-2">${getDepartmentName(app.department)}</p>
+            <p class="mb-2">Applied for: ${app.jobTitle}</p>
+            <p class="text-muted small mb-2">Applied on: ${app.appliedDate}</p>
+            <div class="mb-3">
+              ${app.skills.slice(0, 3).map(skill => `<span class="skill-badge">${skill}</span>`).join('')}
+              ${app.skills.length > 3 ? `<span class="skill-badge">+${app.skills.length - 3} more</span>` : ''}
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-sm btn-outline-primary view-application" data-application-id="${app.id}">
+                <i class="fas fa-eye me-1"></i> View
+              </button>
+              <div>
+                <button class="btn btn-sm btn-outline-success me-1 approve-btn" data-application-id="${app.id}" ${app.status !== 'pending' ? 'disabled' : ''}>
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger reject-btn" data-application-id="${app.id}" ${app.status !== 'pending' ? 'disabled' : ''}>
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      updatePagination(filteredApplications.length);
+    }
+
+    function getDepartmentName(code) {
+      const departments = {
+        cs: "Computer Science Engineering",
+        it: "Information Technology",
+        mech: "Mechanical Engineering"
+      };
+      return departments[code] || "Unknown";
+    }
+
+    function updatePagination(totalItems) {
+      const pagination = document.getElementById('pagination');
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      let paginationHTML = '';
+      if (totalPages > 1) {
+        paginationHTML += `
+          <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+              <span aria-hidden="true">«</span>
+            </a>
+          </li>
+        `;
+        for (let i = 1; i <= totalPages; i++) {
+          paginationHTML += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+              <a class="page-link" href="#" data-page="${i}">${i}</a>
+            </li>
+          `;
+        }
+        paginationHTML += `
+          <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+              <span aria-hidden="true">»</span>
+            </a>
+          </li>
+        `;
+      }
+
+      pagination.innerHTML = paginationHTML;
+      document.querySelectorAll('.page-link').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const page = parseInt(link.dataset.page);
+          if (!isNaN(page) && page !== currentPage) {
+            currentPage = page;
+            renderApplications();
+          }
+        });
+      });
+    }
+
+    function setupEventListeners() {
+      const applicationModal = new bootstrap.Modal(document.getElementById('applicationModal'));
+
+      // Search and filter
+      const searchInput = document.getElementById('searchInput');
+      const filterDepartment = document.getElementById('filterDepartment');
+      const filterStatus = document.getElementById('filterStatus');
+
+      function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const departmentFilter = filterDepartment.value;
+        const statusFilter = filterStatus.value;
+
+        filteredApplications = serverData.applications.filter(app => {
+          const nameMatch = app.name.toLowerCase().includes(searchTerm);
+          const skillMatch = app.skills.some(skill => skill.toLowerCase().includes(searchTerm));
+          const departmentMatch = app.department.toLowerCase().includes(searchTerm);
+          const jobTitleMatch = app.jobTitle.toLowerCase().includes(searchTerm);
+          const departmentFilterMatch = departmentFilter === 'all' || app.department === departmentFilter;
+          const statusFilterMatch = statusFilter === 'all' || app.status === statusFilter;
+          return (nameMatch || skillMatch || departmentMatch || jobTitleMatch) && departmentFilterMatch && statusFilterMatch;
+        });
+
+        currentPage = 1;
+        renderApplications();
+      }
+
+      searchInput.addEventListener('input', applyFilters);
+      filterDepartment.addEventListener('change', applyFilters);
+      filterStatus.addEventListener('change', applyFilters);
+
+      // Clear search
+      document.getElementById('clearSearch').addEventListener('click', () => {
+        searchInput.value = '';
+        filterDepartment.value = 'all';
+        filterStatus.value = 'all';
+        applyFilters();
+      });
+
+      // View application
+      document.getElementById('applicationList').addEventListener('click', e => {
+        const viewBtn = e.target.closest('.view-application');
+        if (viewBtn) {
+          const applicationId = parseInt(viewBtn.dataset.applicationId);
+          const app = serverData.applications.find(a => a.id === applicationId);
+          if (app) {
+            document.getElementById('applicationModalLabel').textContent = `${app.name}'s Application`;
+            document.getElementById('applicationName').textContent = app.name;
+            document.getElementById('applicationContact').textContent = `${app.email} | ${app.phone}`;
+            document.getElementById('applicationProfile').innerHTML = `
+              <p><strong>${app.degree}</strong><br>${app.university}, ${app.graduationYear}</p>
+              <p><strong>CGPA:</strong> ${app.cgpa}</p>
+              <p><strong>Year:</strong> ${app.year}</p>
+              <p><strong>About:</strong> ${app.about}</p>
+            `;
+            document.getElementById('applicationSkills').innerHTML = app.skills.map(skill => `<span class="skill-badge">${skill}</span>`).join('');
+            document.getElementById('applicationDetails').innerHTML = `
+              <p><strong>Job Title:</strong> ${app.jobTitle}</p>
+              <p><strong>Department:</strong> ${getDepartmentName(app.department)}</p>
+              <p><strong>Status:</strong> ${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</p>
+              <p><strong>Applied on:</strong> ${app.appliedDate}</p>
+            `;
+            applicationModal.show();
+          }
+        }
+      });
+
+      // Approve/Reject buttons
+      document.getElementById('applicationList').addEventListener('click', e => {
+        const approveBtn = e.target.closest('.approve-btn');
+        const rejectBtn = e.target.closest('.reject-btn');
+        if (approveBtn && !approveBtn.disabled) {
+          const applicationId = parseInt(approveBtn.dataset.applicationId);
+          const app = serverData.applications.find(a => a.id === applicationId);
+          if (confirm(`Are you sure you want to approve ${app.name}'s application?`)) {
+            updateApplicationStatus(applicationId, 'approved');
+          }
+        } else if (rejectBtn && !rejectBtn.disabled) {
+          const applicationId = parseInt(rejectBtn.dataset.applicationId);
+          const app = serverData.applications.find(a => a.id === applicationId);
+          if (confirm(`Are you sure you want to reject ${app.name}'s application?`)) {
+            updateApplicationStatus(applicationId, 'rejected');
+          }
+        }
+      });
+
+      // Download resume
+      document.querySelector('.download-resume').addEventListener('click', () => {
+        const appName = document.getElementById('applicationName').textContent;
+        const link = document.createElement('a');
+        link.href = 'data:application/pdf;base64,JVBERi0xLjAKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUiBdIC9Db3VudCAxID4+CmVuZG9iagozIDAgb2JqCjwgPCAvVHlwZSAvUGFnZSAvUGFyZW50IDIgMCBSIC9SZXNvdXJjZXMgPDwgPj4gL0NvbnRlbnRzIDQgMCBSIC9NZWRpYUJveCBbMCAwIDYxMiA3OTJdID4+CmVuZG9iagozIDAgb2JqCjw8IC9MZW5ndGggMCA+PgpzdHJlYW0KZW5kc3RyZWFtCmVuZG9iag01IDAgb2JqCjw8IC9GaWx0ZXIgL0ZsYXRlRGVjb2RlID4+CnN0cmVhbQplbmRzdHJlYW0KZW5kb2JqCnRyYWlsZXIgPDwgL1Jvb3QgMSAwIFIgL1NpemUgNiA+PgpzdGFydHhyZWYKMTAyCiUlRU9GCg==';
+        link.download = `${appName}_Resume.pdf`;
+        link.click();
+        alert(`Downloading ${appName}'s resume...`);
+      });
+    }
+
+    function updateApplicationStatus(applicationId, status) {
+      const appIndex = serverData.applications.findIndex(a => a.id === applicationId);
+      if (appIndex !== -1) {
+        serverData.applications[appIndex].status = status;
+        filteredApplications = filteredApplications.map(a => a.id === applicationId ? { ...a, status } : a);
+        renderApplications();
+        alert(`Application ${status}`);
+      }
+    }
+  </script>
+</body>
+</html>

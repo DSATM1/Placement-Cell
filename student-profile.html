@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Profile | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --light-color: #f8f9fa;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      padding: 15px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: white !important;
+    }
+    
+    .nav-link {
+      color: white !important;
+      margin: 0 10px;
+      font-weight: 500;
+    }
+    
+    .nav-link.active {
+      font-weight: 600;
+      border-bottom: 2px solid white;
+    }
+    
+    .profile-section {
+      padding: 30px 0;
+    }
+    
+    .profile-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9ecef;
+    }
+    
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 15px;
+      display: block;
+      border: 2px solid #e9ecef;
+    }
+    
+    .profile-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    
+    .profile-details {
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 5px;
+      padding: 8px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(63, 81, 181, 0.25);
+    }
+    
+    .file-upload {
+      position: relative;
+    }
+    
+    .file-upload input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .file-upload-label {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border: 1px dashed #ced4da;
+      border-radius: 5px;
+      cursor: pointer;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+    
+    .file-upload-label:hover {
+      background-color: #e9ecef;
+    }
+    
+    .file-status {
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .skill-tag {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+    }
+    
+    .skill-tag-remove {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    
+    .resume-preview {
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .resume-icon {
+      font-size: 1.5rem;
+      color: #f44336;
+      margin-right: 10px;
+    }
+    
+    .resume-info {
+      flex: 1;
+    }
+    
+    .resume-title {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    .resume-meta {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    @media (max-width: 768px) {
+      .profile-card {
+        padding: 15px;
+      }
+      .nav-link {
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container px-4">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-handshake me-2"></i>DSATM Placements
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          
+          <li class="nav-item">
+            <div class="dropdown">
+              <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle me-2"></i><span id="navUserName">John Doe</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="student-profile.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+               
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Profile Section -->
+  <section class="profile-section">
+    <div class="container">
+      <h2 class="mb-4"><i class="fas fa-user-graduate me-2"></i>Student Profile</h2>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="profile-card text-center">
+            <img src="https://ui-avatars.com/api/?name=John+Doe&background=3f51b5&color=fff&size=100" alt="Profile" class="profile-avatar" id="profileAvatar">
+            <div class="file-upload">
+              <input type="file" id="avatarUpload" accept="image/*" class="form-control">
+              <label for="avatarUpload" class="file-upload-label">
+                <i class="fas fa-camera me-2"></i> Upload Picture
+              </label>
+              <div class="file-status text-muted mt-2" id="avatarStatus"></div>
+            </div>
+            <h3 class="profile-name" id="displayName">John Doe</h3>
+            <div class="profile-details">
+              <div id="displayDepartment">Computer Science Engineering</div>
+              <div id="displayYear">4th Year | USN: 1DS20CS123</div>
+              <div id="displayCGPA">CGPA: 8.5 | 2024 Batch</div>
+            </div>
+          </div>
+          <div class="profile-card">
+            <h4 class="section-title">Resume</h4>
+            <div class="resume-preview">
+              <div class="resume-icon">
+                <i class="fas fa-file-pdf"></i>
+              </div>
+              <div class="resume-info">
+                <div class="resume-title" id="resumeTitle">John_Doe_Resume.pdf</div>
+                <div class="resume-meta" id="resumeMeta">Uploaded: Oct 15, 2023 | 1.2 MB</div>
+              </div>
+            </div>
+            <div class="file-upload">
+              <input type="file" id="resumeUpload" class="form-control" accept=".pdf">
+              <label for="resumeUpload" class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt me-2"></i> Upload new resume (PDF)
+              </label>
+              <div class="file-status text-muted mt-2" id="resumeStatus"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="profile-card">
+            <form id="profileForm">
+              <h4 class="section-title">Personal Information</h4>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="fullName" class="form-label">Full Name</label>
+                  <input type="text" class="form-control" id="fullName" value="John Doe" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input type="email" class="form-control" id="email" value="john.doe@example.com" required>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="phone" class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="phone" value="+91 9876543210" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="cgpa" class="form-label">Current CGPA</label>
+                  <input type="number" step="0.01" min="0" max="10" class="form-control" id="cgpa" value="8.5" required>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="department" class="form-label">Department</label>
+                  <select class="form-select" id="department" required>
+                    <option value="cs" selected>Computer Science Engineering</option>
+                    <option value="it">Information Technology</option>
+                    <option value="ece">Electronics & Communication</option>
+                    <option value="mech">Mechanical Engineering</option>
+                    <option value="ce">Civil Engineering</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="year" class="form-label">Year of Study</label>
+                  <select class="form-select" id="year" required>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year" selected>4th Year</option>
+                  </select>
+                </div>
+              </div>
+              <h4 class="section-title mt-4">Skills</h4>
+              <div class="skills-container" id="skillsContainer">
+                <span class="skill-tag">Java <span class="skill-tag-remove" onclick="removeSkill(this)">×</span></span>
+                <span class="skill-tag">Python <span class="skill-tag-remove" onclick="removeSkill(this)">×</span></span>
+                <span class="skill-tag">Data Structures <span class="skill-tag-remove" onclick="removeSkill(this)">×</span></span>
+                <span class="skill-tag">SQL <span class="skill-tag-remove" onclick="removeSkill(this)">×</span></span>
+              </div>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" id="newSkill" placeholder="Add new skill">
+                <button class="btn btn-outline-primary" type="button" onclick="addSkill()">Add</button>
+              </div>
+              <h4 class="section-title mt-4">About Me</h4>
+              <div class="mb-3">
+                <textarea class="form-control" id="about" rows="4" placeholder="Write a brief introduction">I am a final year Computer Science student with strong programming skills and passion for software development.</textarea>
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-secondary me-2" onclick="resetForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save me-2"></i>Save Profile
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Shared server data (merged with view-applications.html)
+    let serverData = {
+      profile: {
+        fullName: 'John Doe',
+        email: 'john.doe@example.com',
+        phone: '+91 9876543210',
+        cgpa: 8.5,
+        department: 'cs',
+        year: '4th Year',
+        skills: ['Java', 'Python', 'Data Structures', 'SQL'],
+        about: 'I am a final year Computer Science student with strong programming skills and passion for software development.'
+      },
+      avatar: 'https://ui-avatars.com/api/?name=John+Doe&background=3f51b5&color=fff&size=100',
+      resume: {
+        name: 'John_Doe_Resume.pdf',
+        date: 'Oct 15, 2023',
+        size: 1.2
+      },
+      applications: [
+        {
+          id: 1,
+          name: "Rahul Sharma",
+          email: "rahul.sharma@example.com",
+          phone: "+91 9876543210",
+          degree: "B.Tech in Computer Science",
+          university: "Dayananda Sagar Academy of Technology & Management",
+          graduationYear: "2024",
+          cgpa: 8.5,
+          year: "4th Year",
+          about: "Passionate coder with expertise in full-stack development.",
+          skills: ["Java", "Python", "SQL", "Spring Boot", "JavaScript"],
+          department: "cs",
+          status: "approved",
+          jobTitle: "Software Engineer",
+          appliedDate: "2023-10-15"
+        },
+        {
+          id: 2,
+          name: "Priya Patel",
+          email: "priya.patel@example.com",
+          phone: "+91 8765432109",
+          degree: "B.Tech in Information Technology",
+          university: "Dayananda Sagar Academy of Technology & Management",
+          graduationYear: "2024",
+          cgpa: 8.2,
+          year: "4th Year",
+          about: "Data enthusiast skilled in machine learning and analytics.",
+          skills: ["Python", "Data Science", "Machine Learning", "TensorFlow", "R"],
+          department: "it",
+          status: "pending",
+          jobTitle: "Data Analyst",
+          appliedDate: "2023-10-16"
+        },
+        {
+          id: 3,
+          name: "Amit Kumar",
+          email: "amit.kumar@example.com",
+          phone: "+91 7654321098",
+          degree: "B.Tech in Mechanical Engineering",
+          university: "Dayananda Sagar Academy of Technology & Management",
+          graduationYear: "2024",
+          cgpa: 7.8,
+          year: "4th Year",
+          about: "Mechanical engineer with strong design and simulation skills.",
+          skills: ["AutoCAD", "SolidWorks", "CAD", "MATLAB", "ANSYS"],
+          department: "mech",
+          status: "rejected",
+          jobTitle: "Mechanical Design Engineer",
+          appliedDate: "2023-10-17"
+        }
+      ]
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize UI with server data
+      updateUI();
+
+      // Form submission
+      const profileForm = document.getElementById('profileForm');
+      profileForm.addEventListener('submit', e => {
+        e.preventDefault();
+        if (profileForm.checkValidity()) {
+          // Update server data
+          serverData.profile = {
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            cgpa: parseFloat(document.getElementById('cgpa').value),
+            department: document.getElementById('department').value,
+            year: document.getElementById('year').value,
+            skills: Array.from(document.getElementById('skillsContainer').querySelectorAll('.skill-tag')).map(tag => tag.textContent.replace('×', '').trim()),
+            about: document.getElementById('about').value
+          };
+          updateUI();
+          createApplication();
+          alert('Profile updated and application submitted successfully!');
+        }
+        profileForm.classList.add('was-validated');
+      });
+
+      // Avatar upload
+      document.getElementById('avatarUpload').addEventListener('change', e => {
+        const file = e.target.files[0];
+        const avatarInput = e.target;
+        const avatarStatus = document.getElementById('avatarStatus');
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = event => {
+            serverData.avatar = event.target.result;
+            document.getElementById('profileAvatar').src = serverData.avatar;
+            avatarStatus.textContent = `Uploaded: ${file.name}`;
+            setTimeout(() => { avatarStatus.textContent = ''; }, 3000);
+          };
+          reader.readAsDataURL(file);
+          alert('Image uploaded successfully!');
+        } else {
+          alert('Invalid file. Please upload an image (e.g., JPG, PNG).');
+          avatarInput.value = '';
+          avatarStatus.textContent = '';
+        }
+      });
+
+      // Resume upload
+      document.getElementById('resumeUpload').addEventListener('change', e => {
+        const file = e.target.files[0];
+        const resumeInput = e.target;
+        const resumeStatus = document.getElementById('resumeStatus');
+        if (file && file.type === 'application/pdf') {
+          serverData.resume = {
+            name: file.name,
+            date: new Date().toLocaleDateString(),
+            size: (file.size / (1024 * 1024)).toFixed(2)
+          };
+          document.getElementById('resumeTitle').textContent = serverData.resume.name;
+          document.getElementById('resumeMeta').textContent = `Uploaded: ${serverData.resume.date} | ${serverData.resume.size} MB`;
+          resumeStatus.textContent = `Uploaded: ${file.name}`;
+          setTimeout(() => { resumeStatus.textContent = ''; }, 3000);
+          alert('Resume uploaded successfully!');
+        } else {
+          alert('Invalid file. Please upload a PDF.');
+          resumeInput.value = '';
+          resumeStatus.textContent = '';
+        }
+      });
+    });
+
+    function updateUI() {
+      // Update profile details
+      document.getElementById('displayName').textContent = serverData.profile.fullName;
+      document.getElementById('navUserName').textContent = serverData.profile.fullName;
+      document.getElementById('displayDepartment').textContent = getDepartmentName(serverData.profile.department);
+      document.getElementById('displayYear').textContent = `${serverData.profile.year} | USN: 1DS20CS123`;
+      document.getElementById('displayCGPA').textContent = `CGPA: ${serverData.profile.cgpa} | 2024 Batch`;
+      
+      // Update form
+      document.getElementById('fullName').value = serverData.profile.fullName;
+      document.getElementById('email').value = serverData.profile.email;
+      document.getElementById('phone').value = serverData.profile.phone;
+      document.getElementById('cgpa').value = serverData.profile.cgpa;
+      document.getElementById('department').value = serverData.profile.department;
+      document.getElementById('year').value = serverData.profile.year;
+      document.getElementById('about').value = serverData.profile.about;
+      
+      // Update skills
+      const skillsContainer = document.getElementById('skillsContainer');
+      skillsContainer.innerHTML = '';
+      serverData.profile.skills.forEach(skill => {
+        const skillTag = document.createElement('span');
+        skillTag.className = 'skill-tag';
+        skillTag.innerHTML = `${skill} <span class="skill-tag-remove" onclick="removeSkill(this)">×</span>`;
+        skillsContainer.appendChild(skillTag);
+      });
+      
+      // Update avatar and resume
+      document.getElementById('profileAvatar').src = serverData.avatar;
+      document.getElementById('resumeTitle').textContent = serverData.resume.name;
+      document.getElementById('resumeMeta').textContent = `Uploaded: ${serverData.resume.date} | ${serverData.resume.size} MB`;
+    }
+
+    function getDepartmentName(code) {
+      const departments = {
+        cs: "Computer Science Engineering",
+        it: "Information Technology",
+        ece: "Electronics & Communication",
+        mech: "Mechanical Engineering",
+        ce: "Civil Engineering"
+      };
+      return departments[code] || "Unknown";
+    }
+
+    function createApplication() {
+      const profile = serverData.profile;
+      const existingApplication = serverData.applications.find(app => app.email === profile.email);
+      if (existingApplication) {
+        return; // Prevent duplicate applications
+      }
+
+      const jobTitles = {
+        cs: "Software Engineer",
+        it: "Data Analyst",
+        ece: "Electronics Engineer",
+        mech: "Mechanical Design Engineer",
+        ce: "Civil Engineer"
+      };
+
+      const newApplication = {
+        id: serverData.applications.length + 1,
+        name: profile.fullName,
+        email: profile.email,
+        phone: profile.phone,
+        degree: `B.Tech in ${getDepartmentName(profile.department)}`,
+        university: "Dayananda Sagar Academy of Technology & Management",
+        graduationYear: "2024",
+        cgpa: profile.cgpa,
+        year: profile.year,
+        about: profile.about,
+        skills: profile.skills,
+        department: profile.department,
+        status: "pending",
+        jobTitle: jobTitles[profile.department] || "Engineer",
+        appliedDate: new Date().toLocaleDateString()
+      };
+
+      serverData.applications.push(newApplication);
+    }
+
+    function addSkill() {
+      const skillInput = document.getElementById('newSkill');
+      const skill = skillInput.value.trim();
+      const skillsContainer = document.getElementById('skillsContainer');
+      if (skill && !Array.from(skillsContainer.querySelectorAll('.skill-tag')).some(tag => tag.textContent.includes(skill))) {
+        const skillTag = document.createElement('span');
+        skillTag.className = 'skill-tag';
+        skillTag.innerHTML = `${skill} <span class="skill-tag-remove" onclick="removeSkill(this)">×</span>`;
+        skillsContainer.appendChild(skillTag);
+        skillInput.value = '';
+      } else if (!skill) {
+        alert('Please enter a skill.');
+      } else {
+        alert('Skill already added.');
+      }
+    }
+
+    function removeSkill(element) {
+      element.parentElement.remove();
+    }
+
+    function resetForm() {
+      document.getElementById('profileForm').reset();
+      updateUI();
+      document.getElementById('profileForm').classList.remove('was-validated');
+      alert('Form reset to saved values.');
+    }
+  </script>
+</body>
+</html>

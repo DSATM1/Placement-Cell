@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | DSATM Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff5722;
+      --dark-color: #2c3e50;
+      --light-color: #f8f9fa;
+      --success-color: #4caf50;
+      --info-color: #2196f3;
+      --warning-color: #ffc107;
+      --danger-color: #f44336;
+      --sidebar-width: 250px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+      overflow-x: hidden;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: white !important;
+    }
+    
+    .sidebar {
+      width: var(--sidebar-width);
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      padding-top: 80px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sidebar-menu a {
+      display: block;
+      padding: 12px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar-menu a:hover {
+      background-color: rgba(63, 81, 181, 0.1);
+      border-left: 3px solid var(--primary-color);
+    }
+    
+    .sidebar-menu a.active {
+      background-color: rgba(63, 81, 181, 0.1);
+      border-left: 3px solid var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .sidebar-menu i {
+      width: 25px;
+      margin-right: 10px;
+      text-align: center;
+    }
+    
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 30px;
+      padding-top: 90px;
+      transition: all 0.3s ease;
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      height: 100%;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-card i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+    
+    .dashboard-card h5 {
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .dashboard-card p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    .stat-card i {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+    
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .stat-card .label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .loading-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background-color: #303f9f;
+      border-color: #303f9f;
+      transform: translateY(-2px);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar-toggle {
+        display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1100;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .stat-card .number {
+        font-size: 1.5rem;
+      }
+      
+      .stat-card .label {
+        font-size: 0.8rem;
+      }
+      
+      .dashboard-card i {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-handshake me-2"></i>DSATM Placements
+      </a>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="sidebar-menu">
+      <li>
+        <a href="admin-dashboard.html" class="active" data-bs-toggle="tooltip" title="View dashboard stats">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="manage-students.html" data-bs-toggle="tooltip" title="Manage student profiles">
+          <i class="fas fa-user-graduate"></i> Manage Students
+        </a>
+      </li>
+      <li>
+        <a href="manage-recruiters.html" data-bs-toggle="tooltip" title="Manage recruiter accounts">
+          <i class="fas fa-building"></i> Manage Recruiters
+        </a>
+      </li>
+      <li>
+        <a href="manage-jobs.html" data-bs-toggle="tooltip" title="Manage job postings">
+          <i class="fas fa-briefcase"></i> Manage Jobs
+        </a>
+      </li>
+     
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+          </ol>
+        </nav>
+      </div>
+      
+      <!-- Stats Row -->
+      <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card" style="background: linear-gradient(135deg, #3f51b5, #5c6bc0);">
+            <i class="fas fa-user-graduate"></i>
+            <div class="number" id="statStudents">0</div>
+            <div class="label">Registered Students</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card" style="background: linear-gradient(135deg, #4caf50, #66bb6a);">
+            <i class="fas fa-building"></i>
+            <div class="number" id="statRecruiters">0</div>
+            <div class="label">Recruiter Partners</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card" style="background: linear-gradient(135deg, #ff5722, #ff7043);">
+            <i class="fas fa-briefcase"></i>
+            <div class="number" id="statJobs">0</div>
+            <div class="label">Active Job Postings</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card" style="background: linear-gradient(135deg, #2196f3, #42a5f5);">
+            <i class="fas fa-check-circle"></i>
+            <div class="number" id="statPlacement">0%</div>
+            <div class="label">Placement Rate</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Dashboard Cards -->
+      <div class="row g-4">
+        <div class="col-md-3 col-sm-6">
+          <div class="dashboard-card">
+            <i class="fas fa-user-graduate"></i>
+            <h5>Manage Students</h5>
+            <p>Approve or reject student profiles and verify documents.</p>
+            <a href="manage-students.html" class="btn btn-primary w-100" data-bs-toggle="tooltip" title="Go to student management">Go to Students</a>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="dashboard-card">
+            <i class="fas fa-briefcase"></i>
+            <h5>Manage Jobs</h5>
+            <p>Review and approve job postings from recruiters.</p>
+            <a href="manage-jobs.html" class="btn btn-primary w-100" data-bs-toggle="tooltip" title="Go to job management">Go to Jobs</a>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="dashboard-card">
+            <i class="fas fa-building"></i>
+            <h5>Manage Recruiters</h5>
+            <p>Oversee recruiter accounts and verify credentials.</p>
+            <a href="manage-recruiters.html" class="btn btn-primary w-100" data-bs-toggle="tooltip" title="Go to recruiter management">Go to Recruiters</a>
+          </div>
+        </div>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize tooltips
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+      // Sidebar toggle for mobile
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+      });
+      
+      mainContent.addEventListener('click', () => {
+        if (window.innerWidth < 992) {
+          sidebar.classList.remove('active');
+        }
+      });
+
+      // Mock data for stats
+      const stats = {
+        students: 1250,
+        recruiters: 156,
+        jobs: 84,
+        placement: 95
+      };
+
+      // Simulate loading state
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      loadingOverlay.classList.add('active');
+
+      setTimeout(() => {
+        try {
+          // Animate stat numbers
+          animateNumber('statStudents', stats.students, 1000);
+          animateNumber('statRecruiters', stats.recruiters, 1000);
+          animateNumber('statJobs', stats.jobs, 1000);
+          animateNumber('statPlacement', stats.placement, 1000, '%');
+
+          loadingOverlay.classList.remove('active');
+        } catch (error) {
+          console.error('Error loading stats:', error);
+          loadingOverlay.innerHTML = '<p class="text-danger">Failed to load data. Please try again.</p>';
+        }
+      }, 1500);
+
+      // Number animation function
+      function animateNumber(elementId, target, duration, suffix = '') {
+        const element = document.getElementById(elementId);
+        let start = 0;
+        const step = target / (duration / 16);
+        
+        function update() {
+          start += step;
+          if (start >= target) {
+            start = target;
+            clearInterval(interval);
+          }
+          element.textContent = Math.floor(start) + suffix;
+        }
+        
+        const interval = setInterval(update, 16);
+      }
+    });
+  </script>
+</body>
+</html>
